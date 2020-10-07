@@ -49,7 +49,7 @@ function App() {
               return <ContactsCard key={info.id} {...info} />;
             })
           ) : (
-            <Alert variant="danger">No data available!</Alert>
+            <Alert variant="primary">No data available.</Alert>
           )}
         </Tab>
         <Tab eventKey="dropbox" title="DropBox Files">
@@ -58,7 +58,7 @@ function App() {
               return <DropboxCard key={info.id} {...info} />;
             })
           ) : (
-            <Alert variant="danger">No data available!</Alert>
+            <Alert variant="primary">No data available.</Alert>
           )}
         </Tab>
         <Tab eventKey="slack" title="Slack message/thread">
@@ -67,7 +67,7 @@ function App() {
               return <SlackCard key={info.id} {...info} />;
             })
           ) : (
-            <Alert variant="danger">No data available!</Alert>
+            <Alert variant="primary">No data available.</Alert>
           )}
         </Tab>
         <Tab eventKey="calendar" title="Calendar Entry">
@@ -76,14 +76,14 @@ function App() {
               <CalendarCard key={info.id} {...info} />
             ))
           ) : (
-            <Alert variant="danger">No data available!</Alert>
+            <Alert variant="primary">No data available.</Alert>
           )}
         </Tab>
         <Tab eventKey="tweet" title="Twitter">
           {data.tweet.length > 0 ? (
             data.tweet.map((info, ind) => <TwitterCard key={ind} {...info} />)
           ) : (
-            <Alert variant="danger">No data available!</Alert>
+            <Alert variant="primary">No data available.</Alert>
           )}
         </Tab>
       </Tabs>
