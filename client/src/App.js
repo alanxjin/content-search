@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
+import axios from "axios";
 import {
   Search,
   CalendarCard,
@@ -20,12 +21,27 @@ const defaultData = {
 function App() {
   const [contentType, setContentType] = useState("contacts");
   const [data, setData] = useState(defaultData);
+  const [keyword, setKeyword] = useState("");
+  const getResult = () => {
+    axios
+      .get(`/api?keyword=${keyword}`)
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
     <div className="App">
       <header className="App-header">
         <p>ACME Search</p>
       </header>
-      <Search />
+      <Search
+        keyword={keyword}
+        inputOnChange={setKeyword}
+        buttonOnClick={getResult}
+      />
       <Tabs activeKey={contentType} onSelect={(type) => setContentType(type)}>
         <Tab eventKey="contacts" title="Contacts">
           {data.contacts.length > 0 ? (
@@ -65,7 +81,7 @@ function App() {
         </Tab>
         <Tab eventKey="tweet" title="Twitter">
           {data.tweet.length > 0 ? (
-            data.tweet.map((info) => <TwitterCard key={info.id} {...info} />)
+            data.tweet.map((info, ind) => <TwitterCard key={ind} {...info} />)
           ) : (
             <Alert variant="danger">No data available!</Alert>
           )}
