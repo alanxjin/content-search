@@ -1,33 +1,25 @@
 import React, { useState } from "react";
 import "./App.css";
-import { Search } from "./components";
-import { Tabs, Tab } from "react-bootstrap";
-import Calendar from "./components/Cards/Calendar";
+import {
+  Search,
+  CalendarCard,
+  DropboxCard,
+  ContactsCard,
+  SlackCard,
+  TwitterCard,
+} from "./components";
+import { Tabs, Tab, Alert } from "react-bootstrap";
 
-const data = {
+const defaultData = {
   contacts: [],
-  calendar: [
-    {
-      id: "12345",
-      title: "Acme Proposal Meeting",
-      invitees: "dave, john, bob, carol",
-      matching_terms: ["dave", "john", "bob", "carol", "acme"],
-      date: "2019-01-10 10:00:00",
-    },
-    {
-      id: "12346",
-      title: "Acme Final Delivery Meeting",
-      invitees: "dave, john, bob, alice",
-      matching_terms: ["dave", "john", "bob", "alice", "acme"],
-      date: "2019-03-01 11:00:00",
-    },
-  ],
+  calendar: [],
   slack: [],
   dropbox: [],
   tweet: [],
 };
 function App() {
   const [contentType, setContentType] = useState("contacts");
+  const [data, setData] = useState(defaultData);
   return (
     <div className="App">
       <header className="App-header">
@@ -36,21 +28,47 @@ function App() {
       <Search />
       <Tabs activeKey={contentType} onSelect={(type) => setContentType(type)}>
         <Tab eventKey="contacts" title="Contacts">
-          Contacts
+          {data.contacts.length > 0 ? (
+            data.contacts.map((info) => {
+              return <ContactsCard key={info.id} {...info} />;
+            })
+          ) : (
+            <Alert variant="danger">No data available!</Alert>
+          )}
         </Tab>
         <Tab eventKey="dropbox" title="DropBox Files">
-          DropBox Files
+          {data.dropbox.length > 0 ? (
+            data.dropbox.map((info) => {
+              return <DropboxCard key={info.id} {...info} />;
+            })
+          ) : (
+            <Alert variant="danger">No data available!</Alert>
+          )}
         </Tab>
         <Tab eventKey="slack" title="Slack message/thread">
-          Slack message/thread
+          {data.slack.length > 0 ? (
+            data.slack.map((info) => {
+              return <SlackCard key={info.id} {...info} />;
+            })
+          ) : (
+            <Alert variant="danger">No data available!</Alert>
+          )}
         </Tab>
         <Tab eventKey="calendar" title="Calendar Entry">
-          {data.calendar.map((info) => (
-            <Calendar key={info.id} {...info} />
-          ))}
+          {data.calendar.length > 0 ? (
+            data.calendar.map((info) => (
+              <CalendarCard key={info.id} {...info} />
+            ))
+          ) : (
+            <Alert variant="danger">No data available!</Alert>
+          )}
         </Tab>
         <Tab eventKey="tweet" title="Twitter">
-          Twitter
+          {data.tweet.length > 0 ? (
+            data.tweet.map((info) => <TwitterCard key={info.id} {...info} />)
+          ) : (
+            <Alert variant="danger">No data available!</Alert>
+          )}
         </Tab>
       </Tabs>
     </div>

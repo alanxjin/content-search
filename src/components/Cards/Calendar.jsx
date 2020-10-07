@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Card } from "react-bootstrap";
+import List from "./List";
 
 const Calendar = ({ title, invitees, date }) => {
-  console.log(title);
   return (
     <Card>
       <Card.Body>
         <Card.Title>{title}</Card.Title>
-        <Card.Text>{invitees}</Card.Text>
-        <Card.Text>{date}</Card.Text>
+        <List label="Invitees" items={invitees.split(",")} />
+        <Card.Text>
+          <small className="text-muted">{date}</small>
+        </Card.Text>
       </Card.Body>
     </Card>
   );
