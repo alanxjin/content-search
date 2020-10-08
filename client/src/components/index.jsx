@@ -1,4 +1,5 @@
 export { default as Search } from "./Search";
+export { default as CreateNewForm } from "./CreateNewForm";
 export {
   CalendarCard,
   DropboxCard,

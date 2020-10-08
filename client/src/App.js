@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import axios from "axios";
+//import axios from "axios";
 import {
   Search,
   CalendarCard,
@@ -8,8 +8,9 @@ import {
   ContactsCard,
   SlackCard,
   TwitterCard,
+  CreateNewForm,
 } from "./components";
-import { Tabs, Tab, Alert } from "react-bootstrap";
+import { Tabs, Tab, Alert, Button } from "react-bootstrap";
 import socketIOClient from "socket.io-client";
 
 const ENDPOINT = "http://localhost:5001";
@@ -21,11 +22,16 @@ const defaultData = {
   tweet: [],
 };
 let socket;
+
 function App() {
   const [contentType, setContentType] = useState("contacts");
   const [data, setData] = useState(defaultData);
   const [keyword, setKeyword] = useState("");
-  const [response, setResponse] = useState("");
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   useEffect(() => {
     socket = socketIOClient(ENDPOINT);
     socket.on("Search", (data) => {
@@ -34,17 +40,18 @@ function App() {
     return () => socket.disconnect();
   }, []);
 
-  // Normal api call. (not used after switching to websocket)
-  const getResult = () => {
-    axios
-      .get(`/api/search?keyword=${keyword}`)
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  //// Normal api call. (not used after switching to websocket)
+  //
+  // const getResult = () => {
+  //   axios
+  //     .get(`/api/search?keyword=${keyword}`)
+  //     .then((res) => {
+  //       setData(res.data);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // };
 
   // Websocket set up.
   const sendQuery = () => {
@@ -57,11 +64,16 @@ function App() {
       <header className="App-header">
         <p>ACME Search</p>
       </header>
+
       <Search
         keyword={keyword}
         inputOnChange={setKeyword}
         buttonOnClick={sendQuery}
       />
+      <Button variant="primary" onClick={handleShow}>
+        Create new contact
+      </Button>
+      <CreateNewForm show={show} handleClose={handleClose} />
       <Tabs activeKey={contentType} onSelect={(type) => setContentType(type)}>
         <Tab eventKey="contacts" title="Contacts">
           {data.contacts.length > 0 ? (
