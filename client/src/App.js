@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import {
@@ -10,7 +10,9 @@ import {
   TwitterCard,
 } from "./components";
 import { Tabs, Tab, Alert } from "react-bootstrap";
+import socketIOClient from "socket.io-client";
 
+const ENDPOINT = "http://localhost:5001";
 const defaultData = {
   contacts: [],
   calendar: [],
@@ -18,13 +20,24 @@ const defaultData = {
   dropbox: [],
   tweet: [],
 };
+let socket;
 function App() {
   const [contentType, setContentType] = useState("contacts");
   const [data, setData] = useState(defaultData);
   const [keyword, setKeyword] = useState("");
+  const [response, setResponse] = useState("");
+  useEffect(() => {
+    socket = socketIOClient(ENDPOINT);
+    socket.on("Search", (data) => {
+      setData(data);
+    });
+    return () => socket.disconnect();
+  }, []);
+
+  // Normal api call. (not used after switching to websocket)
   const getResult = () => {
     axios
-      .get(`/api?keyword=${keyword}`)
+      .get(`/api/search?keyword=${keyword}`)
       .then((res) => {
         setData(res.data);
       })
@@ -32,6 +45,13 @@ function App() {
         console.log(error);
       });
   };
+
+  // Websocket set up.
+  const sendQuery = () => {
+    console.log("Query sent");
+    socket.emit("Search", keyword);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -40,7 +60,7 @@ function App() {
       <Search
         keyword={keyword}
         inputOnChange={setKeyword}
-        buttonOnClick={getResult}
+        buttonOnClick={sendQuery}
       />
       <Tabs activeKey={contentType} onSelect={(type) => setContentType(type)}>
         <Tab eventKey="contacts" title="Contacts">
