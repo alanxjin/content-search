@@ -70,10 +70,12 @@ function App() {
         inputOnChange={setKeyword}
         buttonOnClick={sendQuery}
       />
-      <Button variant="primary" onClick={handleShow}>
+
+      <Button variant="primary" className="mb-2" onClick={handleShow}>
         Create new contact
       </Button>
       <CreateNewForm show={show} handleClose={handleClose} />
+
       <Tabs activeKey={contentType} onSelect={(type) => setContentType(type)}>
         <Tab eventKey="contacts" title="Contacts">
           {data.contacts.length > 0 ? (

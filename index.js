@@ -5,6 +5,16 @@ const app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+// Serve the webpage
+//if (process.env.NODE_ENV === "production") {
+app.use(express.static("client/build"));
+
+const path = require("path");
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+});
+//}
+
 // Load the data
 // (Usually data should be fetched from database)
 const calendar = require("./data/calendar.json");
@@ -48,15 +58,6 @@ io.on("connection", (socket) => {
 http.listen(5001, () => {
   console.log("listening on *:5001");
 });
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/public"));
-
-  const path = require("path");
-  app.get("/", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "public", "index.html"));
-  });
-}
 
 // Get endpoint for search. (not used after switching to websocket)
 app.get("/api/search", function (req, res) {
